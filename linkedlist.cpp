@@ -27,12 +27,13 @@ LinkedList::~LinkedList()
     Node *temp = _front;
 
     while (_front != nullptr) {
+        
         temp = _front;
         _front = _front->next;
         delete temp;
     }
-    delete _front;
-    delete _rear;
+    if (_front != nullptr)
+        delete _front;
 }
 
 /**
@@ -93,16 +94,17 @@ void LinkedList::displayAll()
 // TODO: Add comments
 void LinkedList::addRear(T val)
 {
-    Node *new_node = new Node(val);
-
     if (_front == nullptr) {
-        _front = new_node;
-        _rear = new_node;
+        _front = new Node(val);
+        _rear = _front;
+        return;
     }
-    else {
-        _rear->next = new_node;
-        _rear = new_node;
+    Node *tmp = _front;
+
+    while (tmp->next != nullptr) {
+        tmp = tmp->next;
     }
+    tmp->next = new Node(val);
     _count++;
 }
 
@@ -111,6 +113,11 @@ void LinkedList::addFront(T val)
 {
     Node *newNode = new Node(val);
 
+    if (_front == nullptr) {
+        _front = newNode;
+        _count++;
+        return;
+    }
     newNode->next = _front;
     _front = newNode;
     _count++;
@@ -127,11 +134,15 @@ bool LinkedList::deleteFront(T &OldNum)
 
     if (_front == nullptr) return false;
     OldNum = _front->val;
-    if (_front == _rear) _front = _rear = nullptr;
-    else ptr = _front->next;
+    if (_front->next == nullptr) {
+        delete _front;
+        _front = nullptr;
+    } else {
+        ptr = _front->next;
+        delete _front;
+        _front = ptr;
+    }
     _count--;
-    delete _front;
-    _front = ptr;
     return true;
 }
 
@@ -148,13 +159,16 @@ bool LinkedList::deleteRear(T &OldNum)
     if (_front->next == nullptr) {
         OldNum = _front->val;
         delete _front;
-        _front = nullptr;
+        _rear = _front = nullptr;
+        --_count;
         return true;
     };
-    OldNum = ptr->next->val;
     while (ptr->next->next != nullptr) ptr = ptr->next;
+    OldNum = ptr->next->val;
     delete ptr->next;
     ptr->next = nullptr;
+    _rear = ptr;
+    --_count;
     return true;
 }
 
@@ -171,13 +185,20 @@ bool LinkedList::deleteRear(T &OldNum)
  */
 bool LinkedList::deleteAt(int pos, T &val)
 {
-    if (pos < 0 || pos > _count) return false;
+    Node *ptr = _front;
+    Node *tmp = _front;
+
+    if (OUT_OF_RANGE(pos, _count - 1)) return false;
     if (pos == 0) return deleteFront(val);
     if (pos == _count) return deleteRear(val);
-    // TODO: Add code here
-    //  check if the pos is valid first, then move the ptr to the rigth positon
-    //  consider the special case of deleting the first node and the last node
-    //  Do not forget to set value.
+    for (int i = 0; i != pos - 1; i++)
+        ptr = ptr->next;
+    val = ptr->next->val;
+    tmp = ptr->next->next;
+    delete ptr->next;
+    ptr->next = tmp;
+    _count--;
+    return true;
 }
 
 /**
@@ -191,9 +212,24 @@ bool LinkedList::deleteAt(int pos, T &val)
  */
 bool LinkedList::insertAt(int pos, T val)
 {
-    // TODO: Add code here
-    //  check if the pos is valid first, then move the ptr to the rigth positon
-    //  consider the special case of inserting the first node and the last node
+    Node *ptr = _front;
+    Node *tmp = new Node(val);
+
+    if (OUT_OF_RANGE(pos, _count)) return false;
+    if (pos == 0) {
+        addFront(val);
+        return true;
+    }
+    if (pos == _count) {
+        addRear(val);
+        return true;
+    }
+    for (int i = 0; i < pos - 1; i++)
+        ptr = ptr->next;
+    tmp->next = ptr->next;
+    ptr->next = tmp;
+    _count++;
+    return true;
 }
 
 /**
@@ -202,12 +238,18 @@ bool LinkedList::insertAt(int pos, T val)
  */
 LinkedList::LinkedList(const LinkedList &other)
 {
-    // Start with an empty list
-    _front = nullptr;
+    Node *otherPtr = other._front;
+
+    _front = new Node(other._front->val);
     _rear = nullptr;
     _count = 0;
-    // TODO: Add code here. Interate through the other list and add a new node to this list
-    // for each node in the other list. The new node should have the same value as the other node.
+
+    otherPtr = otherPtr->next;
+    while (otherPtr != nullptr) {
+        addRear(otherPtr->val);
+        otherPtr = otherPtr->next;
+        _count++;
+    }
 }
 
 /**
@@ -218,13 +260,23 @@ LinkedList::LinkedList(const LinkedList &other)
 LinkedList &LinkedList::operator=(const LinkedList &other)
 {
     if (this != &other)
-    { // check if the same object
-      // Delete all nodes in this list
-      // TODO: Add code here
-      // Interate through the other list and add a new node to this list
-      // Be sure to set the front and rear pointers to the correct values
-      // Be sure to set the count to the correct value
-      // TODO: Add code here
+    {
+        Node *otherPtr = other._front;
+        Node *ptr = _front;
+        int x = 0;
+
+        while (_front != nullptr) 
+            deleteFront(x);
+        _front = new Node(other._front->val);
+        ++_count;
+        _rear = nullptr;
+        _count = 0;
+        otherPtr = otherPtr->next;
+        while (otherPtr != nullptr) {
+            addRear(otherPtr->val);
+            otherPtr = otherPtr->next;
+        }
+        
     }
     return *this;
 }

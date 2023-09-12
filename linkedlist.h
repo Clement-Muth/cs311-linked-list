@@ -16,6 +16,12 @@ using namespace std;
 // Datatype T : element type definition
 typedef int T; // int for now but can change later
 
+#define PI 3.14159
+
+#define OUT_OF_RANGE(pos, max_range) pos < 0 || pos > max_range
+
+#define cOut(s) cout << s << endl;
+
 // a list node is defined here as a struct Node for now
 struct Node
 {
@@ -40,7 +46,7 @@ private:
 
 public:
     LinkedList() : _front{nullptr},
-                   _rear{nullptr},
+                   _rear{_front},
                    _count{0}
     { /* constructor to create an empty list */
     }
