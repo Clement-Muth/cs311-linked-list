@@ -26,14 +26,13 @@ LinkedList::~LinkedList()
 {
     Node *temp = _front;
 
+    if (_front == nullptr) return;
     while (_front != nullptr) {
         
         temp = _front;
         _front = _front->next;
         delete temp;
     }
-    if (_front != nullptr)
-        delete _front;
 }
 
 /**
@@ -51,14 +50,7 @@ bool LinkedList::isEmpty() const
  */
 int LinkedList::length() const
 {
-    int count = 0;
-    Node *temp = _front;
-
-    while (temp != nullptr) {
-        temp = _front->next;
-        count++;
-    }
-    return count;
+    return _count;
 }
 
 /**
@@ -99,6 +91,7 @@ void LinkedList::addRear(T val)
     if (_front == nullptr) {
         _front = new Node(val);
         _rear = _front;
+        _count++;
         return;
     }
     Node *tmp = _front;
@@ -194,7 +187,7 @@ bool LinkedList::deleteAt(int pos, T &val)
 
     if (OUT_OF_RANGE(pos, _count - 1)) return false;
     if (pos == 0) return deleteFront(val);
-    if (pos == _count) return deleteRear(val);
+    if (pos == _count - 1) return deleteRear(val);
     for (int i = 0; i != pos - 1; i++)
         ptr = ptr->next;
     val = ptr->next->val;
