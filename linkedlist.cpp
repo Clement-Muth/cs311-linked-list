@@ -9,7 +9,7 @@
 // You must complete the TODO parts and then complete LinkedList.cpp. Delete "TODO" after you are done.
 
 // ====================================================
-// Your name: Clément Nicolas Denis Muth
+// Your name: Clement Nicolas Denis Muth
 // Complier: g++
 // File type: linkedList.cpp implementation file
 //=====================================================
@@ -91,7 +91,9 @@ void LinkedList::displayAll()
     cout << toString() << endl;
 }
 
-// TODO: Add comments
+/**
+ * @brief Add node to the end of the list
+ */
 void LinkedList::addRear(T val)
 {
     if (_front == nullptr) {
@@ -108,7 +110,9 @@ void LinkedList::addRear(T val)
     _count++;
 }
 
-// TODO: Add comments
+/**
+ * @brief Add node to the start of the list
+ */
 void LinkedList::addFront(T val)
 {
     Node *newNode = new Node(val);
