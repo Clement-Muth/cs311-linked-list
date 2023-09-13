@@ -212,7 +212,10 @@ bool LinkedList::insertAt(int pos, T val)
     Node *ptr = _front;
     Node *tmp = new Node(val);
 
-    if (OUT_OF_RANGE(pos, _count)) return false;
+    if (OUT_OF_RANGE(pos, _count)) {
+        delete tmp;
+        return false;
+    }
     if (pos == 0) {
         addFront(val);
         return true;
@@ -264,10 +267,9 @@ LinkedList &LinkedList::operator=(const LinkedList &other)
 
         while (_front != nullptr) 
             deleteFront(x);
-        _front = new Node(other._front->val);
-        ++_count;
         _rear = nullptr;
-        _count = 0;
+        _front = new Node(other._front->val);
+        _count = 1;
         otherPtr = otherPtr->next;
         while (otherPtr != nullptr) {
             addRear(otherPtr->val);
