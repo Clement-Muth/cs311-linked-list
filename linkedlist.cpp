@@ -28,7 +28,6 @@ LinkedList::~LinkedList()
 
     if (_front == nullptr) return;
     while (_front != nullptr) {
-        
         temp = _front;
         _front = _front->next;
         delete temp;
@@ -96,9 +95,7 @@ void LinkedList::addRear(T val)
     }
     Node *tmp = _front;
 
-    while (tmp->next != nullptr) {
-        tmp = tmp->next;
-    }
+    while (tmp->next != nullptr) tmp = tmp->next;
     tmp->next = new Node(val);
     _count++;
 }
@@ -188,8 +185,7 @@ bool LinkedList::deleteAt(int pos, T &val)
     if (OUT_OF_RANGE(pos, _count - 1)) return false;
     if (pos == 0) return deleteFront(val);
     if (pos == _count - 1) return deleteRear(val);
-    for (int i = 0; i != pos - 1; i++)
-        ptr = ptr->next;
+    for (int i = 0; i != pos - 1; i++) ptr = ptr->next;
     val = ptr->next->val;
     tmp = ptr->next->next;
     delete ptr->next;
@@ -210,12 +206,8 @@ bool LinkedList::deleteAt(int pos, T &val)
 bool LinkedList::insertAt(int pos, T val)
 {
     Node *ptr = _front;
-    Node *tmp = new Node(val);
 
-    if (OUT_OF_RANGE(pos, _count)) {
-        delete tmp;
-        return false;
-    }
+    if (OUT_OF_RANGE(pos, _count)) return false;
     if (pos == 0) {
         addFront(val);
         return true;
@@ -224,8 +216,8 @@ bool LinkedList::insertAt(int pos, T val)
         addRear(val);
         return true;
     }
-    for (int i = 0; i < pos - 1; i++)
-        ptr = ptr->next;
+    Node *tmp = new Node(val);
+    for (int i = 0; i < pos - 1; i++) ptr = ptr->next;
     tmp->next = ptr->next;
     ptr->next = tmp;
     _count++;
@@ -243,7 +235,6 @@ LinkedList::LinkedList(const LinkedList &other)
     _front = new Node(other._front->val);
     _rear = nullptr;
     _count = 0;
-
     otherPtr = otherPtr->next;
     while (otherPtr != nullptr) {
         addRear(otherPtr->val);
@@ -262,11 +253,9 @@ LinkedList &LinkedList::operator=(const LinkedList &other)
     if (this != &other)
     {
         Node *otherPtr = other._front;
-        Node *ptr = _front;
-        int x = 0;
+        int __x = 0;
 
-        while (_front != nullptr) 
-            deleteFront(x);
+        while (_front != nullptr) deleteFront(__x);
         _rear = nullptr;
         _front = new Node(other._front->val);
         _count = 1;
